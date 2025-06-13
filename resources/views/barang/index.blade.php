@@ -34,7 +34,7 @@
                     </p>
                 </div>
                 <div class="card-footer d-flex justify-content-between">
-                    <a href="{{ route('barang.edit', $barang->id) }}" class="btn btn-sm btn-warning">Edit</a>
+            {{-- <a href="{{ route('barang.edit', $barang->id) }}" class="btn btn-sm btn-warning">Edit</a> --}}
                     <form action="{{ route('barang.destroy', $barang->id) }}" method="POST" class="d-inline">
                         @csrf
                         @method('DELETE')
