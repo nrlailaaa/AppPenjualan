@@ -32,13 +32,19 @@
         <h3 class="fw-bold">Daftar Kategori</h3>
         <div>
             <a href="{{ route('kategori.create') }}" class="btn btn-success">+ Tambah Kategori</a>
-            <a href="{{ route('dashboard') }}" class="btn btn-outline-secondary ms-2">Dashboard</a>
         </div>
     </div>
 
+    {{-- Notifikasi Toastr --}}
     @if (session('success'))
     <script>
         toastr.success("{{ session('success') }}");
+    </script>
+    @endif
+
+    @if (session('error'))
+    <script>
+        toastr.error("{{ session('error') }}");
     </script>
     @endif
 

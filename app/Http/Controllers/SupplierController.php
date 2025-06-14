@@ -7,10 +7,21 @@ use Illuminate\Http\Request;
 
 class SupplierController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $suppliers = Supplier::all(); // Ambil semua data supplier
-        return view('supplier.index', compact('suppliers'));
+    $search = $request->input('search');
+
+    $query = Supplier::query();
+
+    if ($search) {
+        $query->where('nama', 'like', '%' . $search . '%')
+              ->orWhere('alamat', 'like', '%' . $search . '%')
+              ->orWhere('kodepos', 'like', '%' . $search . '%');
+    }
+
+    $suppliers = $query->orderBy('nama')->paginate(2)->withQueryString();
+
+    return view('supplier.index', compact('suppliers'));
     }
 
     public function create()
@@ -29,6 +40,12 @@ class SupplierController extends Controller
         Supplier::create($request->only(['nama', 'alamat', 'kodepos']));
 
         return redirect()->route('supplier.index')->with('success', 'Supplier berhasil ditambahkan');
+    }
+
+    public function edit($id)
+    {
+        $supplier = Supplier::findOrFail($id);
+        return view('supplier.edit', compact('supplier'));
     }
 
     public function update(Request $request, $id)

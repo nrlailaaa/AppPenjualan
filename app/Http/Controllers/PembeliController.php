@@ -8,10 +8,21 @@ use Illuminate\Http\Request;
 
 class PembeliController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $pembelis = Pembeli::all();
-        return view('pembeli.index', compact('pembelis'));
+    $search = $request->input('search');
+
+    $query = Pembeli::query();
+
+    if ($search) {
+        $query->where('nama', 'like', '%' . $search . '%')
+              ->orWhere('alamat', 'like', '%' . $search . '%')
+              ->orWhere('nohp', 'like', '%' . $search . '%');
+    }
+
+    $pembelis = $query->orderBy('nama')->paginate(5)->withQueryString();
+
+    return view('pembeli.index', compact('pembelis'));
     }
 
     public function create()

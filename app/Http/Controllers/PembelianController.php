@@ -9,11 +9,25 @@ use Illuminate\Http\Request;
 
 class PembelianController extends Controller
 {
-    public function index()
-    {
-        $pembelians = Pembelian::with(['barang', 'supplier'])->latest()->get();
-        return view('pembelian.index', compact('pembelians'));
+    public function index(Request $request)
+{
+    $search = $request->input('search');
+
+    $query = Pembelian::with(['barang', 'supplier']);
+
+    if ($search) {
+        $query->whereHas('barang', function ($q) use ($search) {
+            $q->where('nama', 'like', '%' . $search . '%');
+        })->orWhereHas('supplier', function ($q) use ($search) {
+            $q->where('nama', 'like', '%' . $search . '%');
+        });
     }
+
+    $pembelians = $query->orderByDesc('tanggal')->paginate(5)->withQueryString();
+
+    return view('pembelian.index', compact('pembelians'));
+}
+
 
     public function create()
     {

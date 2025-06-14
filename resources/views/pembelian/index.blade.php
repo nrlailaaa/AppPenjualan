@@ -8,16 +8,25 @@
         <h3 class="fw-bold">Data Pembelian</h3>
         <div>
             <a href="{{ route('pembelian.create') }}" class="btn btn-success">+ Tambah Pembelian</a>
-            <a href="{{ route('dashboard') }}" class="btn btn-outline-secondary ms-2">Dashboard</a>
         </div>
     </div>
 
+    {{-- Notifikasi --}}
     @if (session('success'))
     <script>
         toastr.success("{{ session('success') }}");
     </script>
     @endif
 
+    {{-- Form Pencarian --}}
+    <form method="GET" action="{{ route('pembelian.index') }}" class="mb-3">
+        <div class="input-group">
+            <input type="text" name="search" class="form-control" placeholder="Cari barang atau supplier..." value="{{ request('search') }}">
+            <button class="btn btn-outline-secondary" type="submit">Cari</button>
+        </div>
+    </form>
+
+    {{-- Tabel --}}
     <div class="card shadow-sm">
         <div class="card-body p-0">
             <table class="table table-striped mb-0">
@@ -34,7 +43,7 @@
                 <tbody>
                     @forelse ($pembelians as $pembelian)
                     <tr>
-                        <td>{{ $loop->iteration }}</td>
+                        <td>{{ $loop->iteration + ($pembelians->currentPage() - 1) * $pembelians->perPage() }}</td>
                         <td>{{ $pembelian->barang->nama }}</td>
                         <td>{{ $pembelian->supplier->nama }}</td>
                         <td>{{ $pembelian->jumlah }}</td>
@@ -56,6 +65,11 @@
                 </tbody>
             </table>
         </div>
+    </div>
+
+    {{-- Pagination --}}
+    <div class="mt-3">
+        {{ $pembelians->onEachSide(1)->links('pagination::bootstrap-4') }}
     </div>
 </div>
 @endsection

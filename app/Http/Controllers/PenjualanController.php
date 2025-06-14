@@ -30,7 +30,7 @@ class PenjualanController extends Controller
             });
         }
 
-        $penjualans = $query->orderByDesc('tanggal_pesan')->paginate(10)->withQueryString();
+        $penjualans = $query->orderByDesc('tanggal_pesan')->paginate(4)->withQueryString();
 
         return view('penjualan.index', compact('penjualans', 'tglAwal', 'tglAkhir', 'pembeli'));
     }

@@ -8,7 +8,6 @@
         <h3 class="fw-bold">Daftar Supplier</h3>
         <div>
             <a href="{{ route('supplier.create') }}" class="btn btn-success">+ Tambah Supplier</a>
-            <a href="{{ route('dashboard') }}" class="btn btn-outline-secondary ms-2">Dashboard</a>
         </div>
     </div>
 
@@ -17,6 +16,14 @@
         toastr.success("{{ session('success') }}");
     </script>
     @endif
+
+    {{-- Form Search --}}
+    <form method="GET" action="{{ route('supplier.index') }}" class="mb-3">
+        <div class="input-group">
+            <input type="text" name="search" class="form-control" placeholder="Cari nama/alamat/kodepos..." value="{{ request('search') }}">
+            <button class="btn btn-outline-secondary" type="submit">Cari</button>
+        </div>
+    </form>
 
     <div class="card shadow-sm">
         <div class="card-body p-0">
@@ -33,7 +40,7 @@
                 <tbody>
                     @forelse ($suppliers as $supplier)
                     <tr>
-                        <td>{{ $loop->iteration }}</td>
+                        <td>{{ $loop->iteration + ($suppliers->currentPage() - 1) * $suppliers->perPage() }}</td>
                         <td>{{ $supplier->nama }}</td>
                         <td>{{ $supplier->alamat }}</td>
                         <td>{{ $supplier->kodepos }}</td>
@@ -55,8 +62,10 @@
             </table>
         </div>
     </div>
+
+    {{-- Pagination --}}
+    <div class="mt-3">
+        {{ $suppliers->onEachSide(1)->links('pagination::bootstrap-4') }}
+    </div>
 </div>
 @endsection
-
-
-

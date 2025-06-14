@@ -8,15 +8,23 @@
         <h3 class="fw-bold">Daftar Pembeli</h3>
         <div>
             <a href="{{ route('pembeli.create') }}" class="btn btn-success">+ Tambah Pembeli</a>
-            <a href="{{ route('dashboard') }}" class="btn btn-outline-secondary ms-2">Dashboard</a>
         </div>
     </div>
 
+    {{-- Notifikasi --}}
     @if (session('success'))
     <script>
         toastr.success("{{ session('success') }}");
     </script>
     @endif
+
+    {{-- Form Search --}}
+    <form method="GET" action="{{ route('pembeli.index') }}" class="mb-3">
+        <div class="input-group">
+            <input type="text" name="search" class="form-control" placeholder="Cari nama/alamat/No HP..." value="{{ request('search') }}">
+            <button class="btn btn-outline-secondary" type="submit">Cari</button>
+        </div>
+    </form>
 
     <div class="card shadow-sm">
         <div class="card-body p-0">
@@ -34,7 +42,7 @@
                 <tbody>
                     @forelse ($pembelis as $row)
                     <tr>
-                        <td>{{ $loop->iteration }}</td>
+                        <td>{{ $loop->iteration + ($pembelis->currentPage() - 1) * $pembelis->perPage() }}</td>
                         <td>{{ $row->nama }}</td>
                         <td>{{ $row->jenis_kelamin == 'L' ? 'Laki-laki' : 'Perempuan' }}</td>
                         <td>{{ $row->alamat }}</td>
@@ -56,6 +64,11 @@
                 </tbody>
             </table>
         </div>
+    </div>
+
+    {{-- Pagination --}}
+    <div class="mt-3">
+        {{ $pembelis->onEachSide(1)->links('pagination::bootstrap-4') }}
     </div>
 </div>
 @endsection

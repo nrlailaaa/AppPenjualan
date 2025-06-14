@@ -8,17 +8,26 @@
         <h3 class="fw-bold">Daftar Barang</h3>
         <div>
             <a href="{{ route('barang.create') }}" class="btn btn-success">+ Tambah Barang</a>
-            <a href="{{ route('dashboard') }}" class="btn btn-outline-secondary ms-2">Dashboard</a>
         </div>
     </div>
 
+    {{-- Notifikasi sukses --}}
     @if (session('success'))
     <script>
         toastr.success("{{ session('success') }}");
     </script>
     @endif
 
-    <div class="row row-cols-1 row-cols-md-3 g-4">
+    {{-- Form Pencarian --}}
+    <form method="GET" action="{{ route('barang.index') }}" class="mb-3">
+        <div class="input-group">
+            <input type="text" name="search" class="form-control" placeholder="Cari nama barang..." value="{{ request('search') }}">
+            <button class="btn btn-outline-secondary" type="submit">Cari</button>
+        </div>
+    </form>
+
+    {{-- Grid Kartu Barang --}}
+    <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-4">
         @forelse ($barangs as $barang)
         <div class="col">
             <div class="card h-100 shadow-sm">
@@ -30,11 +39,11 @@
                     <p class="card-text">
                         <strong>Kategori:</strong> {{ $barang->kategori->nama }}<br>
                         <strong>Stok:</strong> {{ $barang->stok }}<br>
-                        <strong>Harga:</strong> {{ $barang->harga }}<br>
+                        <strong>Harga:</strong> Rp{{ number_format($barang->harga, 0, ',', '.') }}
                     </p>
                 </div>
                 <div class="card-footer d-flex justify-content-between">
-            {{-- <a href="{{ route('barang.edit', $barang->id) }}" class="btn btn-sm btn-warning">Edit</a> --}}
+                    <a href="{{ route('barang.edit', $barang->id) }}" class="btn btn-sm btn-warning">Edit</a>
                     <form action="{{ route('barang.destroy', $barang->id) }}" method="POST" class="d-inline">
                         @csrf
                         @method('DELETE')
@@ -49,7 +58,10 @@
         </div>
         @endforelse
     </div>
+
+    {{-- Pagination --}}
+    <div class="mt-4">
+        {{ $barangs->onEachSide(1)->links('pagination::bootstrap-4') }}
+    </div>
 </div>
 @endsection
-
-

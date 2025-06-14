@@ -8,10 +8,19 @@ use Illuminate\Http\Request;
 
 class BarangController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $barangs = Barang::with('kategori')->get();
-        return view('barang.index', compact('barangs'));
+    $search = $request->input('search');
+
+    $query = Barang::with('kategori');
+
+    if ($search) {
+        $query->where('nama', 'like', '%' . $search . '%');
+    }
+
+    $barangs = $query->orderBy('nama')->paginate(6)->withQueryString();
+
+    return view('barang.index', compact('barangs'));
     }
 
     public function create()
